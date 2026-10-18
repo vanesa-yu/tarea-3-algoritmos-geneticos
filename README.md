@@ -1,10 +1,8 @@
 # Actividad 03 — Algoritmos de Enjambre en Machine Learning
 
-Este repositorio contiene la implementación, hecha desde cero (sin librerías de swarm intelligence ya construidas), de dos algoritmos de enjambre —**ABC** (Artificial Bee Colony) y **PSO** (Particle Swarm Optimization)— aplicados a cuatro etapas distintas del ciclo de vida de un modelo de aprendizaje automático.
-
 **Autora:** Maria Vanesa Yucra Mendoza
 **Curso:** Algoritmos de Enjambre — EPIS, Universidad Nacional del Altiplano
-**Trabajo:** Individual
+
 
 ## ¿Qué problema resuelve cada script?
 
@@ -73,6 +71,52 @@ Los cuatro scripts siguen la misma estructura conceptual, pedida como parte de l
 6. **Finalización** — el criterio de parada y cómo se extrae la mejor solución encontrada.
 
 Cada una de estas 6 etapas está marcada explícitamente con comentarios numerados dentro del código de los 4 scripts, y explicada con mayor detalle matemático en `Informe_Actividad03_Enjambre.docx`.
+
+## Estructura general del código
+
+Los 4 scripts están escritos en Python puro (con NumPy y scikit-learn) y siguen exactamente la misma organización interna, para que sean fáciles de comparar entre sí:
+
+```
+"""Docstring inicial: objetivo, dataset usado, cómo ejecutar"""
+
+import ...
+np.random.seed(42)          # reproducibilidad: mismos resultados en cada corrida
+
+# 0. DATOS
+def cargar_datos(): ...     # carga el dataset y separa train/test
+
+# 1. REPRESENTACIÓN DE LA PARTÍCULA
+#    (constantes de dimensión y límites del espacio de búsqueda)
+def decodificar_...(): ...  # convierte el vector numérico en algo "usable"
+                             #   (hiperparámetros, pesos de red, centroides, etc.)
+
+# 2. FUNCIÓN DE APTITUD
+def fitness(particula, X, y): ...
+
+# 3. INICIALIZACIÓN DEL ENJAMBRE
+def inicializar_enjambre(n): ...
+
+# 4. COMPORTAMIENTO DE LA PARTÍCULA / ABEJA
+def actualizar_particula(...): ...   # (o fase_abejas_... en el script de ABC)
+
+# 5. EVOLUCIÓN DEL ENJAMBRE (ciclo principal)
+def pso_... (X, y, n_particulas, n_iteraciones, w, c1, c2): ...
+    # inicializa -> itera -> en cada iteración actualiza, evalúa y
+    # guarda el mejor global (gbest) -> imprime el progreso
+
+# EJECUCIÓN
+if __name__ == "__main__":
+    # carga datos, corre el algoritmo, imprime y evalúa el resultado final
+```
+
+Algunos detalles importantes de implementación, comunes a los 4 scripts:
+
+- **Nada de librerías de swarm intelligence**: PSO y ABC están escritos a mano (solo con `numpy`); `scikit-learn` se usa únicamente para los modelos de ML (SVM, regresión logística) y para cargar los datasets, nunca para optimizar.
+- **`np.random.seed(42)`** fija la semilla aleatoria al inicio de cada script, para que los resultados sean reproducibles entre corridas.
+- **Separación train/test**: en los 3 scripts supervisados (feature selection, hyperparameter tuning, red neuronal) los datos se dividen 80/20, y la optimización por enjambre **solo ve el conjunto de entrenamiento**; el conjunto de prueba se usa al final, una sola vez, para reportar el resultado real.
+- **Impresión del progreso**: cada script imprime el avance iteración por iteración (mejor fitness encontrado hasta ese momento), para poder observar cómo converge el enjambre al ejecutarlo.
+- **Nombres de variables y comentarios en español**, siguiendo el idioma del informe y de la actividad.
+- **Sin dependencias externas más allá de `numpy` y `scikit-learn`** — no se requiere instalar ninguna librería especializada de optimización.
 
 ## Resumen de resultados
 
